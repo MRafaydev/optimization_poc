@@ -4,14 +4,12 @@ WORKDIR /app
 
 COPY requirements.txt .
 
+RUN python -m pip install --upgrade pip
 # Set up pip proxy server
-ENV http_proxy http://3.89.27.27:8081/
-ENV https_proxy https://3.89.27.27:8081/
-
-RUN mkdir -p /pip-cache && \
-    pip install --no-cache-dir --trusted-host pypi-proxy -r requirements.txt \
-    --cache-dir /pip-cache \
-    --no-warn-script-location
+RUN pip install --no-cache-dir --trusted-host 54.197.154.136 pandas \
+    --index-url http://admin:admin@54.197.154.136:8081/repository/pypi-proxy/simple
+#RUN pip install  -r requirements.txt
+#    --index-url http://3.89.27.27:8081/repository/pypi-proxy/simple/
 
 COPY . .
 
