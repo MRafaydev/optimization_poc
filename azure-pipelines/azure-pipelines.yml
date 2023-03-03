@@ -1,0 +1,26 @@
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  pool:
+    vmImage: windows-2019
+  steps:
+  - checkout: self
+    clean: true
+    persistCredentials: True
+
+  - task: oc-setup@3
+    inputs:
+      connectionType: 'OpenShift Connection Service'
+      openshiftService: 'openshift-02'
+
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        oc project at-rafaydev765
+        oc get bc example-poc
+        oc start-build example-poc --from-dir=. --follow --wait
+        oc apply -f k8s/live/live-deployment.yaml 
+        oc apply -f k8s/live/live-service.yaml 
+
+        # oc apply -f k8s/live/live-route.yaml
